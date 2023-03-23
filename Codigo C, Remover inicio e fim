@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Personagem {
+    char nome[50];
+    int idade;
+    struct Personagem* prox;
+} Personagem;
+
+void inserirPersonagemInicio(Personagem** lista, char nome[], int idade) {
+    Personagem* novoPersonagem = (Personagem*) malloc(sizeof(Personagem));
+    if (novoPersonagem != NULL) {
+        novoPersonagem->idade = idade;
+        strcpy(novoPersonagem->nome, nome);
+        novoPersonagem->prox = *lista;
+        *lista = novoPersonagem;
+    }
+}
+
+void removerPersonagemInicio(Personagem** lista) {
+    if (*lista != NULL) {
+        Personagem* primeiroPersonagem = *lista;
+        *lista = primeiroPersonagem->prox;
+        free(primeiroPersonagem);
+    }
+}
+
+void inserirPersonagemFinal(Personagem** lista, char nome[], int idade) {
+    Personagem* novoPersonagem = (Personagem*) malloc(sizeof(Personagem));
+    if (novoPersonagem != NULL) {
+        novoPersonagem->idade = idade;
+        strcpy(novoPersonagem->nome, nome);
+        novoPersonagem->prox = NULL;
+        if (*lista == NULL) {
+            *lista = novoPersonagem;
+        } else {
+            Personagem* ultimoPersonagem = *lista;
+            while (ultimoPersonagem->prox != NULL) {
+                ultimoPersonagem = ultimoPersonagem->prox;
+            }
+            ultimoPersonagem->prox = novoPersonagem;
+        }
+    }
+}
+
+void removerPersonagemFinal(Personagem** lista) {
+    if (*lista != NULL) {
+        Personagem* ultimoPersonagem = *lista;
+        if (ultimoPersonagem->prox == NULL) {
+            *lista = NULL;
+            free(ultimoPersonagem);
+        } else {
+            while (ultimoPersonagem->prox->prox != NULL) {
+                ultimoPersonagem = ultimoPersonagem->prox;
+            }
+            Personagem* penultimoPersonagem = ultimoPersonagem;
+            ultimoPersonagem = ultimoPersonagem->prox;
+            penultimoPersonagem->prox = NULL;
+            free(ultimoPersonagem);
+        }
+    }
+}
+
+int main() {
+    Personagem* lista = NULL;
+    
+    inserirPersonagemInicio(&lista, "Alice", 25);
+    inserirPersonagemInicio(&lista, "Bob", 30);
+    inserirPersonagemFinal(&lista, "Charlie", 35);
+
+    removerPersonagemInicio(&lista);
+    removerPersonagemFinal(&lista);
+    
+    return 0;
+}
